@@ -2621,42 +2621,60 @@ class Report(DaBase):
             calc_start,
             "grid_production",
         )
-        solar_production = self.get_sensor_week_sum(
-            self.solar_production_ac_sensors,
-            wd,
-            calc_start,
-            "solar_production",
-        )
-        ev_consumption = self.get_sensor_week_sum(
-            self.ev_consumption_sensors,
-            wd,
-            calc_start,
-            "ev_consumption",
-        )
-        wp_consumption = self.get_sensor_week_sum(
-            self.wp_consumption_sensors,
-            wd,
-            calc_start,
-            "wp_consumption",
-        )
-        boiler_consumption = self.get_sensor_week_sum(
-            self.boiler_consumption_sensors,
-            wd,
-            calc_start,
-            "boiler_consumption",
-        )
-        battery_consumption = self.get_sensor_week_sum(
-            self.battery_consumption_sensors,
-            wd,
-            calc_start,
-            "battery_consumption",
-        )
-        battery_production = self.get_sensor_week_sum(
-            self.battery_production_sensors,
-            wd,
-            calc_start,
-            "battery_production",
-        )
+        try:
+            solar_production = self.get_sensor_week_sum(
+                self.solar_production_ac_sensors,
+                wd,
+                calc_start,
+                "solar_production",
+            )
+        except:
+            solar_production = None
+        try:
+            ev_consumption = self.get_sensor_week_sum(
+                self.ev_consumption_sensors,
+                wd,
+                calc_start,
+                "ev_consumption",
+            )
+        except:
+            ev_consumption = None
+        try:
+            wp_consumption = self.get_sensor_week_sum(
+                self.wp_consumption_sensors,
+                wd,
+                calc_start,
+                "wp_consumption",
+            )
+        except:
+            wp_consumption = None
+        try:
+            boiler_consumption = self.get_sensor_week_sum(
+                self.boiler_consumption_sensors,
+                wd,
+                calc_start,
+                "boiler_consumption",
+            )
+        except:
+            boiler_consumption = None
+        try:
+            battery_consumption = self.get_sensor_week_sum(
+                self.battery_consumption_sensors,
+                wd,
+                calc_start,
+                "battery_consumption",
+            )
+        except:
+            battery_consumption = None
+        try:
+            battery_production = self.get_sensor_week_sum(
+                self.battery_production_sensors,
+                wd,
+                calc_start,
+                "battery_production",
+            )
+        except:
+            battery_production = None
 
         # baseload = grid_consumption - grid_production + solar_production - ev_consumption
         # - wp_consumption - battery_consumption + battery_production
