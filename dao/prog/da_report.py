@@ -836,6 +836,8 @@ class Report(DaBase):
         tot = tot_g
         vanaf = tot + datetime.timedelta(days=-365)
         self.periodes.update(create_dict("365 dagen", vanaf, tot, "maand"))
+        # vandaag kwartier
+        self.periodes.update(create_dict("vandaag kwartier", vanaf, tot, interval="kwartier"))
         return
 
     def get_time_border_ha_record(
@@ -972,6 +974,54 @@ class Report(DaBase):
             elif agg == "dag":
                 column = self.db_ha.day(t2.c.start_ts).label("dag")
                 column2 = func.min(self.db_ha.day_start(t2.c.start_ts)).label("tijd")
+            elif agg == "kwartier":
+                t2 = statistics.alias("t2")
+                column = func.floor(func.minute(t2.c.start_ts) / 15).label("kwartier")
+                column2 = func.min(
+                    func.date_format(
+                        t2.c.start_ts,
+                        literal("%Y-%m-%d %H:") +
+                        func.lpad(func.floor(func.minute(t2.c.start_ts) / 15) * 15, 2, literal("0")) +
+                        literal(":00")
+                    )
+                ).label("tijd")
+                
+                columns = [
+                    column,
+                    column2,
+                    func.max(self.db_ha.from_unixtime(t2.c.start_ts)).label("tot"),
+                    t2.c.start_ts.label("utc"),
+                    func.sum(
+                        case(
+                            (t2.c.state > t1.c.state, t2.c.state - t1.c.state), else_=0
+                        )
+                    ).label(col_name),
+                    v1.c.unit_of_measurement.label("dim"),
+                ]
+
+                query = (
+                    select(*columns)
+                    .select_from(
+                        t1.join(t2, t2.c.start_ts == t1.c.start_ts + 900).join(
+                            v1,
+                            (v1.c.id == t1.c.metadata_id) & (v1.c.id == t2.c.metadata_id),
+                        )
+                    )
+                    .where(
+                        (v1.c.statistic_id == sensor)
+                        & (t1.c.state.isnot(None))
+                        & (t2.c.state.isnot(None))
+                        & (
+                            t1.c.start_ts
+                            >= self.db_ha.unix_timestamp(start_ts_param1) - 900
+                        )
+                        & (
+                            t1.c.start_ts
+                            < self.db_ha.unix_timestamp(start_ts_param2) - 900
+                        )
+                    )
+                    .group_by("kwartier")
+                )
             else:  # interval == "uur
                 column = self.db_ha.hour(t2.c.start_ts).label("uur")
                 column2 = self.db_ha.from_unixtime(t2.c.start_ts).label("tijd")
@@ -1523,6 +1573,11 @@ class Report(DaBase):
             result = datetime.datetime(moment.year, moment.month, moment.day)
             if as_index:
                 return result.strftime("%Y-%m-%d")
+        elif interval == "kwartier":
+            minute = (moment.minute // 15) * 15
+            result = moment.replace(minute=minute, second=0, microsecond=0)
+            if as_index:
+                return result.strftime("%Y-%m-%d %H:%M")
         elif interval == "weekdag":
             return moment.weekday()
         elif interval == "heel_uur":
@@ -1555,12 +1610,18 @@ class Report(DaBase):
             moment_str = str(moment)
             if rep_interval == "uur":
                 tijd_str = moment_str[10:16]
+            elif rep_interval == "kwartier":
+                hour = moment.hour
+                minute = (moment.minute // 15) * 15
+                tijd_str = f"{hour:02d}:{minute:02d}"
             elif rep_interval == "dag":
                 tijd_str = moment_str[0:10]
             else:  # maand
                 tijd_str = moment_str[0:7]  # jaar maand
             if step_interval == "uur":
                 moment = moment + datetime.timedelta(hours=1)
+            elif step_interval == "kwartier":
+                moment = moment + datetime.timedelta(minutes=15)
             elif step_interval == "dag":
                 moment = moment + datetime.timedelta(days=1)
             else:  # "maand":
@@ -1894,6 +1955,16 @@ class Report(DaBase):
         elif rep_interval == "dag":
             column = self.db_da.day(t1.c.time).label("dag")
             column2 = func.min(self.db_da.day_start(t1.c.time)).label("tijd")
+        elif rep_interval == "kwartier":
+            column = func.floor(func.minute(t1.c.time) / 15).label("kwartier")
+            column2 = func.min(
+                func.date_format(
+                    t1.c.time,
+                    literal("%Y-%m-%d %H:") +
+                    func.lpad(func.floor(func.minute(t1.c.time) / 15) * 15, 2, literal("0")) +
+                    literal(":00")
+                )
+            ).label("tijd")
         else:  # rep_interval == "uur"
             column = self.db_da.hour(t1.c.time).label("uur")
             column2 = func.min(self.db_da.hour_start(t1.c.time)).label("tijd")
@@ -2065,6 +2136,8 @@ class Report(DaBase):
             column = self.db_da.month(t1.c.time).label("maand")
         elif interval == "dag":
             column = self.db_da.day(t1.c.time).label("dag")
+        elif interval == "kwartier":
+            column = func.floor(func.minute(t1.c.time) / 15).label("kwartier")
         else:  # interval == "uur"
             column = self.db_da.hour(t1.c.time).label("uur")
         result = None
