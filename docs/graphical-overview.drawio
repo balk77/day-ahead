@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="he5T8lWoa1vIINJB208G">
-    <mxGraphModel dx="620" dy="437" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="347" dy="245" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -89,7 +89,7 @@
             <mxPoint x="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ftseRKghdQ1psZspKPMH-21" parent="1" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.patternFillRect;fillStyle=hor;step=5;fillStrokeWidth=0.2;fillStrokeColor=#dddddd;fillColor=#e1d5e7;strokeColor=#9673a6;" value="" vertex="1">
+        <mxCell id="ftseRKghdQ1psZspKPMH-21" parent="1" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.patternFillRect;fillStyle=hor;step=5;fillStrokeWidth=0.2;fillStrokeColor=#dddddd;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
           <mxGeometry height="80" width="420" x="280" y="200" as="geometry" />
         </mxCell>
         <mxCell id="ftseRKghdQ1psZspKPMH-22" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="Home Assistant &quot;de uitvoerder&quot;" vertex="1">
@@ -173,6 +173,12 @@
           <mxGeometry relative="1" x="0.05" y="2" as="geometry">
             <mxPoint x="-2" as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="dL6Esu1YfDjPt-fg_U96-1" parent="1" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.concepts.script;" value="Scripts" vertex="1">
+          <mxGeometry height="35" width="40" x="500" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="dL6Esu1YfDjPt-fg_U96-2" parent="1" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.concepts.script;" value="Automations" vertex="1">
+          <mxGeometry height="35" width="40" x="600" y="222.5" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
